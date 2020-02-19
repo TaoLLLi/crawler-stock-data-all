@@ -1,6 +1,5 @@
 package com.ths.service.impl;
 
-import com.ths.job.CrawlerThsGnListUrlJob;
 import com.ths.parse.service.ThsParseHtmlService;
 import com.ths.service.ThsGnCrawlService;
 import org.openqa.selenium.WebDriver;

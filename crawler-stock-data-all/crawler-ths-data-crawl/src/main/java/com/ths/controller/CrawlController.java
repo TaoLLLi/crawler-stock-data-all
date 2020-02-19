@@ -22,8 +22,11 @@ public class CrawlController {
     @RequestMapping("/test")
     @ResponseBody
     public void test() {
+        // 抓取所有概念板块的url
         List<HashMap<String, String>> list = thsGnCrawlService.ThsGnCrawlListUrl();
+        // 放入阻塞队列
         thsGnDetailCrawlService.putAllArrayBlockingQueue(list);
+        // 对线程抓取
         thsGnDetailCrawlService.ConsumeCrawlerGnDetailData(1);
     }
 
