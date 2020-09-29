@@ -1,23 +1,30 @@
 package com.ths.job;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+
+import org.apache.http.client.methods.HttpGet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.ths.dao.StockDfcfFundFlowInfoMapper;
 import com.ths.domain.StockDfcfFundFlowInfo;
 import com.ths.util.HttpClientUtils;
 import com.ths.util.HttpUtils;
-import org.apache.http.client.methods.HttpGet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-
-import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Component
 public class DFCFFundFlowCrawlerJob {
@@ -62,7 +69,7 @@ public class DFCFFundFlowCrawlerJob {
     private String dfcfFundFlowUrl = "http://nufm.dfcfw.com/EM_Finance2014NumericApplication/JS.aspx";
 
 //    @Scheduled(cron = "0 0 8-23 * * ?")
-    @Scheduled(cron = "0/10 * * * * ?")
+//    @Scheduled(cron = "0/10 * * * * ?")
     public void execute() {
 //        String thsFengHongSwitch = System.getProperty("dfcf.fund.flow.switch");
 //        if (!"true".equals(thsFengHongSwitch)) {

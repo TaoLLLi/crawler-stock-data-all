@@ -1,7 +1,9 @@
 package com.ths.service.impl;
 
-import com.ths.parse.service.ThsParseHtmlService;
-import com.ths.service.ThsGnCrawlService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -10,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.ths.constant.Constants;
+import com.ths.parse.service.ThsParseHtmlService;
+import com.ths.service.ThsGnCrawlService;
 
 @Service
 public class ThsGnCrawlServiceImpl implements ThsGnCrawlService {
@@ -28,7 +30,8 @@ public class ThsGnCrawlServiceImpl implements ThsGnCrawlService {
 
     @Override
     public List<HashMap<String, String>> ThsGnCrawlListUrl() {
-        System.setProperty("webdriver.chrome.driver", "/Users/admin/Documents/selenium/chrome/79.0.3945.36/chromedriver");
+		System.setProperty("webdriver.chrome.driver",
+				Constants.CHROMEDRIVER_STRING);
         ChromeOptions options = new ChromeOptions();
         //是否启用浏览器界面的参数
         //无界面参数

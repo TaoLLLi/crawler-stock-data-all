@@ -1,8 +1,14 @@
 package com.ths.service.impl;
 
-import com.ths.dao.StockThsGnInfoDao;
-import com.ths.domain.StockThsGnInfo;
-import com.ths.service.ThsGnDetailCrawlService;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,12 +25,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.PostConstruct;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import com.alibaba.fastjson.JSONObject;
+import com.ths.constant.Constants;
+import com.ths.dao.StockThsGnInfoDao;
+import com.ths.domain.StockThsGnInfo;
+import com.ths.service.ThsGnDetailCrawlService;
 
 @Service
 public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
@@ -65,7 +70,8 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
                     String gnName = map.get("gnName");
                     String crawlerDateStr = new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(new Date());
                     //chromederiver存放位置
-                    System.setProperty("webdriver.chrome.driver", "/Users/admin/Documents/selenium/chrome/79.0.3945.36/chromedriver");
+					System.setProperty("webdriver.chrome.driver",
+							Constants.CHROMEDRIVER_STRING);
                     ChromeOptions options = new ChromeOptions();
                     //无界面参数
                     //        options.addArguments("headless");
@@ -140,7 +146,8 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
                 stockThsGnInfo.setCrawlerVersion("同花顺概念板块#" + crawlerDateStr);
                 stockThsGnInfo.setCreateTime(new Date());
                 stockThsGnInfo.setUpdateTime(new Date());
-                stockThsGnInfoDao.insert(stockThsGnInfo);
+				System.out.println(JSONObject.toJSONString(stockThsGnInfo));
+				stockThsGnInfoDao.insert(stockThsGnInfo);
             } catch (Exception e) {
                 LOGGER.error("插入同花顺概念板块数据出现异常:", e);
             }
