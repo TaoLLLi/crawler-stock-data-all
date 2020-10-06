@@ -261,7 +261,7 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 			String[] dates = dataJsonObject.getString("dates").split(",");
 //			dataJsonObject.getJSONArray("sortYear").get(0);
 			String year = "2020";
-			int limit = 170;// 只处理至今前170条数据
+			int limit = 15;// 只处理至今前170条数据
 			int t = price.length / 4 - limit;
 			int size = t > 0 ? limit : price.length / 4;
 			int index = t < 0 ? 0 : t * 4;

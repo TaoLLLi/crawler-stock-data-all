@@ -28,7 +28,7 @@ public class CrawlController {
 		// 放入阻塞队列
 		thsGnDetailCrawlService.putAllArrayBlockingQueue(list);
 		// 对线程抓取
-		thsGnDetailCrawlService.ConsumeCrawlerGnDetailData(6);
+		thsGnDetailCrawlService.ConsumeCrawlerGnDetailData(1);
 	}
 
 }
