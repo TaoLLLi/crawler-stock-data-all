@@ -26,8 +26,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ths.constant.Constants;
-import com.ths.dao.StockThsGnInfoDao;
+import com.ths.dao.StockThsGnInfoMapper;
 import com.ths.entity.StockThsGnInfo;
 import com.ths.service.ThsGnDetailCrawlService;
 
@@ -41,7 +42,7 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 	private ArrayBlockingQueue<HashMap<String, String>> arrayBlockingQueue = new ArrayBlockingQueue<>(1000);
 
 	@Autowired
-	private StockThsGnInfoDao stockThsGnInfoDao;
+	private StockThsGnInfoMapper stockThsGnInfoDao;
 
 	@Override
 	public void putAllArrayBlockingQueue(List<HashMap<String, String>> list) {
@@ -146,7 +147,14 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 				stockThsGnInfo.setCreateTime(new Date());
 				stockThsGnInfo.setUpdateTime(new Date());
 				System.out.println(JSONObject.toJSONString(stockThsGnInfo));
-				stockThsGnInfoDao.insert(stockThsGnInfo);
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				StockThsGnInfo existInfo = stockThsGnInfoDao
+						.selectOne(new QueryWrapper<StockThsGnInfo>(new StockThsGnInfo().setStockName(stockName))
+								.ge("crawler_time", format.format(new Date()) + " 00:00:00")
+								.le("crawler_time", format.format(new Date()) + " 23:59:59"));
+				if (existInfo == null) {
+					stockThsGnInfoDao.insert(stockThsGnInfo);
+				}
 			} catch (Exception e) {
 				LOGGER.error("插入同花顺概念板块数据出现异常:", e);
 			}
