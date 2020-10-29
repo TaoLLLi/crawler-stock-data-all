@@ -21,6 +21,7 @@ public class ThsGnCrawlServiceImpl implements ThsGnCrawlService {
 	private final static Logger LOGGER = LoggerFactory.getLogger(ThsGnCrawlServiceImpl.class);
 
 	/**
+	 * 
 	 * 同花顺全部概念板块url
 	 */
 	private final static String GN_URL = "http://q.10jqka.com.cn/gn/";
