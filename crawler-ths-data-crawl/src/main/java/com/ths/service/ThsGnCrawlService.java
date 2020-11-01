@@ -5,6 +5,5 @@ import java.util.List;
 
 public interface ThsGnCrawlService {
 
-    List<HashMap<String, String>> ThsGnCrawlListUrl();
-
+	List<HashMap<String, String>> ThsGnCrawlListUrl();
 }

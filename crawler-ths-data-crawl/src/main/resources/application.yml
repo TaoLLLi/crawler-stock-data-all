@@ -25,3 +25,6 @@ mybatis-plus:
       logic-not-delete-value: 0
   # mapper xml映射路径
   mapper-locations: classpath:mapper/*.xml
+  
+stock: 
+  ths-url: http://d.10jqka.com.cn/v6/line/hs_%s/%s/all.js
