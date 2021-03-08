@@ -31,4 +31,10 @@ public class CrawlController {
 		thsGnDetailCrawlService.ConsumeCrawlerGnDetailData(1);
 	}
 
+	@RequestMapping("/test2")
+	@ResponseBody
+	public void teya1(String gnUrl, String gnName) {
+		thsGnDetailCrawlService.ConsumeCrawlerGn(gnUrl, gnName);
+	}
+
 }

@@ -24,6 +24,7 @@ public class ThsGnCrawlServiceImpl implements ThsGnCrawlService {
 	 * 
 	 * 同花顺全部概念板块url
 	 */
+//	private final static String GN_URL = "http://q.10jqka.com.cn/gn/detail/code/301558/";
 	private final static String GN_URL = "http://q.10jqka.com.cn/gn/";
 
 	@Autowired

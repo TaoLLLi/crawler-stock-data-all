@@ -1,5 +1,11 @@
 package com.ths.util;
 
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.http.HttpHost;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.CookieSpecs;
@@ -11,12 +17,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by xieshuai 2016/11/26 0026.
@@ -73,7 +73,7 @@ public class HttpUtils {
     public static HttpGet get(String url, Map<String, Object> params, String userAgent) {
         url += buildParamString(params);
         HttpGet result = new HttpGet(url);
-        result.addHeader("User-Agent", userAgent == null ? DEFAULT_USER_AGENT : userAgent);
+//        result.addHeader("User-Agent", userAgent == null ? DEFAULT_USER_AGENT : userAgent);
         return result;
     }
 

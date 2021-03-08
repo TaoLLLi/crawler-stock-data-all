@@ -74,6 +74,7 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 					Map<String, String> map = arrayBlockingQueue.take();
 					String url = map.get("url");
 					String gnName = map.get("gnName");
+					String gnCode = url.substring(url.length() - 7, url.length() - 1);
 					String crawlerDateStr = new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(new Date());
 					// chromederiver存放位置
 					System.setProperty("webdriver.chrome.driver", Constants.CHROMEDRIVER_STRING);
@@ -81,18 +82,19 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 					// 无界面参数
 					// options.addArguments("headless");
 					// 禁用沙盒 就是被这个参数搞了一天
-					// options.addArguments("no-sandbox");
+//					options.addArguments("no-sandbox");
+					options.addArguments("disable-infobars");
 					WebDriver webDriver = new ChromeDriver(options);
 					try {
 						webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 						webDriver.get(url);
-						Thread.sleep(1000L);
+//						Thread.sleep(500);
 						String oneGnHtml = webDriver.getPageSource();
-						LOGGER.info("当前概念：[{}],html数据为[{}]", gnName, oneGnHtml);
-						LOGGER.info(oneGnHtml);
+//						LOGGER.info("当前概念：[{}],html数据为[{}]", gnName, oneGnHtml);
+//						LOGGER.info(oneGnHtml);
 						// TODO 解析并存储数据
 						parseHtmlAndInsertData(webDriver, oneGnHtml, gnName, crawlerDateStr);
-						clicktoOneGnNextPage(webDriver, oneGnHtml, gnName, crawlerDateStr);
+						clicktoOneGnNextPage(webDriver, oneGnHtml, gnName, crawlerDateStr, 1, gnCode);
 					} catch (Exception e) {
 						LOGGER.error("用chromerDriver抓取数据，出现异常，url为[{}],异常为[{}]", url, e);
 					} finally {
@@ -103,6 +105,38 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 			} catch (Exception e) {
 				LOGGER.error("阻塞队列出现循环出现异常:", e);
 			}
+		}
+	}
+
+	@Override
+	public void ConsumeCrawlerGn(String url, String gnName) {
+		// TODO Auto-generated method stub
+		String gnCode = url.substring(url.length() - 7, url.length() - 1);
+		String crawlerDateStr = new SimpleDateFormat("yyyy-MM-dd HH:00:00").format(new Date());
+		// chromederiver存放位置
+		System.setProperty("webdriver.chrome.driver", Constants.CHROMEDRIVER_STRING);
+		ChromeOptions options = new ChromeOptions();
+		// 无界面参数
+		// options.addArguments("headless");
+		// 禁用沙盒 就是被这个参数搞了一天
+//		options.addArguments("no-sandbox");
+		options.addArguments("disable-infobars");
+		WebDriver webDriver = new ChromeDriver(options);
+		try {
+			webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+			webDriver.get(url);
+//			Thread.sleep(500);
+			String oneGnHtml = webDriver.getPageSource();
+//			LOGGER.info("当前概念：[{}],html数据为[{}]", gnName, oneGnHtml);
+//			LOGGER.info(oneGnHtml);
+			// TODO 解析并存储数据
+			parseHtmlAndInsertData(webDriver, oneGnHtml, gnName, crawlerDateStr);
+			clicktoOneGnNextPage(webDriver, oneGnHtml, gnName, crawlerDateStr, 1, gnCode);
+		} catch (Exception e) {
+			LOGGER.error("用chromerDriver抓取数据，出现异常，url为[{}],异常为[{}]", url, e);
+		} finally {
+			webDriver.close();
+			webDriver.quit();
 		}
 	}
 
@@ -160,7 +194,7 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 						.selectOne(new QueryWrapper<StockThsGnInfo>(new StockThsGnInfo().setStockName(stockName)));
 				if (existInfo == null) {
 					stockThsGnInfoMapper.insert(stockThsGnInfo);
-					clicktoStockDetail(stockCode, stockName, webDriver);
+//					clicktoStockDetail(stockCode, stockName, webDriver);
 				} else {
 					stockThsGnInfo.setId(existInfo.getId());
 					if (!existInfo.getGnName().contains(stockThsGnInfo.getGnName())) {
@@ -187,11 +221,25 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 		return new BigDecimal(value);
 	}
 
-	public boolean clicktoOneGnNextPage(WebDriver webDriver, String oneGnHtml, String key, String crawlerDateStr)
+	public boolean clicktoOneGnNextPage(WebDriver webDriver, String oneGnHtml, String key, String crawlerDateStr,
+			int pageIndex, String gnCode)
 			throws InterruptedException {
+		System.out.println("该翻页了--------->" + gnCode);
 		// 是否包含下一页
 		String pageNumber = includeNextPage(oneGnHtml);
 		if (!StringUtils.isEmpty(pageNumber)) {
+			pageIndex++;
+			String indexUrl = "http://q.10jqka.com.cn/gn/detail/field/264648/order/desc/page/" + pageIndex
+					+ "/ajax/1/code/" + gnCode;
+//			HttpUtils.get(indexUrl);
+			System.err.println("手动访问的url: " + indexUrl);
+//			Thread.sleep(3000);
+//			ChromeOptions options = new ChromeOptions();
+//			options.addArguments("disable-infobars");
+//			WebDriver indexWeb = new ChromeDriver(options);
+//			indexWeb.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+//			indexWeb.get(indexUrl);
+
 			WebElement nextPageElement = webDriver.findElement(By.linkText("下一页"));
 			webDriver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 			nextPageElement.click();
@@ -201,7 +249,7 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 			LOGGER.info(nextPageHtml);
 			// TODO 解析并存储数据
 			parseHtmlAndInsertData(webDriver, nextPageHtml, key, crawlerDateStr);
-			clicktoOneGnNextPage(webDriver, nextPageHtml, key, crawlerDateStr);
+			clicktoOneGnNextPage(webDriver, nextPageHtml, key, crawlerDateStr, pageIndex, gnCode);
 		}
 		return true;
 	}
@@ -300,7 +348,7 @@ public class ThsGnDetailCrawlServiceImpl implements ThsGnDetailCrawlService {
 				StockBox exiStockBox = stockBoxMapper.selectOne(
 						new QueryWrapper<StockBox>(new StockBox().setStockCode(stockCode).setKDate(box.getKDate())));
 				if (exiStockBox == null) {
-					stockBoxMapper.insert(box);
+//					stockBoxMapper.insert(box);
 				}
 				boxs[j] = box;
 				j++;
